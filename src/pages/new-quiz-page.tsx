@@ -1,11 +1,12 @@
 import Navbar from "../components/navbar/navbar";
+import NewQuiz from "../components/new-quiz/new-quiz";
 
-export default function NewQuiz() {
+export default function NewQuizPage() {
   return (
     <>
       <div>
         <Navbar />
-        <p>NEW QUIZ</p>
+        <NewQuiz />
       </div>
     </>
   );

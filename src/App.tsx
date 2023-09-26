@@ -1,13 +1,17 @@
-import Home from "./components/home/home";
-import Navbar from "./components/navbar/navbar";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import NewQuizPage from "./pages/new-quiz-page";
+import HomePage from "./pages/home-page";
 
-export default function Root() {
-  return (
-    <>
-      <div>
-        <Navbar />
-        <Home />
-      </div>
-    </>
-  );
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <HomePage />,
+  },
+  {
+    path: "/new-quiz",
+    element: <NewQuizPage />,
+  },
+]);
+export default function App() {
+  return <RouterProvider router={router}></RouterProvider>;
 }
