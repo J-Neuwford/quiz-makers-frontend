@@ -10,10 +10,14 @@
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
-.navbar img /* Quiz Logo*/ {
+.logo-container {
   cursor: pointer;
-  height: 80px;
-  width: auto;
   margin-left: 10px;
   padding: 10px;
+  background-color: #382d3b; /* Apply background color to the container */
+}
+
+.logo-container img {
+  height: 80px;
+  width: auto;
 }

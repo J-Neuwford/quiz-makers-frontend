@@ -3,8 +3,8 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 
-import App from "./routes/App";
-import NewQuiz from "./routes/New-quiz";
+import App from "./App";
+import NewQuiz from "./pages/new-quiz";
 
 const router = createBrowserRouter([
   {
