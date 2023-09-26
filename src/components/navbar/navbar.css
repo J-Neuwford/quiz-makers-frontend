@@ -1,0 +1,16 @@
+.navbar {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #382d3b;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.navbar img /* Quiz Logo*/ {
+  cursor: pointer;
+  height: 80px;
+  width: auto;
+  margin-left: 10px;
+  padding: 10px;
+}
