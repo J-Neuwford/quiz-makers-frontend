@@ -5,7 +5,7 @@ import "./App.css";
 export default function Root() {
   return (
     <>
-      <div className="background">
+      <div>
         <Navbar />
         <Home />
       </div>
