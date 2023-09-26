@@ -3,13 +3,13 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 
-import Root from "./routes/root";
-import NewQuiz from "./routes/new-quiz";
+import App from "./routes/App";
+import NewQuiz from "./routes/New-quiz";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <App />,
   },
   {
     path: "/new-quiz",
