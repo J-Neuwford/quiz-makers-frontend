@@ -23,3 +23,8 @@ button.new-quiz-button {
   border-style: dashed;
   border-color: yellow;
 }
+
+button.new-quiz-button:hover {
+  background-color: #00fff7;
+  color: black;
+}
