@@ -1,3 +1,5 @@
+import "./new-quiz.css";
+
 export default function NewQuiz() {
   return (
     <>
