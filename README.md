@@ -1,3 +1,31 @@
+## Features achieved
+
+#### MVP
+The user can:
+- [x] Play the existing quizzes
+- [x] Create their own quiz
+
+#### Beyond MVP
+
+The user can:
+- [x] See a top 10 leaderboard
+
+## How to try the project
+
+### Setup
+
+1. Clone the repo
+2. Install Node.js dependencies
+
+   ```bash
+   npm install
+   ```
+3. Run
+
+   ```
+   npm run dev
+   ```
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

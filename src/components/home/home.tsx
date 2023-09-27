@@ -1,6 +1,7 @@
 //import { useNavigate } from "react-router-dom";
 //import React from "react";
 import "./home.css";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -10,7 +11,12 @@ const Home = () => {
         <div>
           <button className="new-quiz-button">New Quiz</button>
         </div>
-        <div className="buttons-and-text">
+        <div className="quizzes-buttons">
+          <Link to="/quiz">
+            <div>
+              <button>QuizText</button>
+            </div>
+          </Link>
           <button>Art</button>
           <button>Film</button>
           <button>Geography</button>
