@@ -12,9 +12,9 @@
   overflow: hidden;
 }
 
-.buttons-and-text {
+.quizzes-buttons {
   display: flex;
-  flex-direction: column;
+
 }
 
 button.new-quiz-button {
