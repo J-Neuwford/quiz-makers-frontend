@@ -1,20 +1,17 @@
-.page-container {
-  margin: 0;
-  display: flex;
-  place-items: center;
+/* .page-container {
   width: 100%;
   background-image: url("../../assets/quiz-bg.png");
   background-size: cover;
   background-repeat: no-repeat;
-  position: relative;
   justify-content: space-between;
-  align-items: center;
   overflow: hidden;
-}
+} */
 
-.buttons-and-text {
-  display: flex;
-  flex-direction: column;
+.quizzes-buttons {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin-top: 3rem;
 }
 
 button.new-quiz-button {
