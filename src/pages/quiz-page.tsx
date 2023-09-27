@@ -15,10 +15,8 @@ export default function QuizPage() {
   
   return (
     <>
-      <div>
+      <div className="page-container">
         <Navbar />
-        <h2>Quiz ID</h2>
-        {/* <h2>Quiz ID: {quizId}</h2> */}
         <Quiz />
       </div>
     </>

@@ -8,17 +8,30 @@ const Home = () => {
     <div className="page-container">
       <div>
         <h1>Welcome to the Quiz Maker App</h1>
-        <div>
-          <button className="new-quiz-button">New Quiz</button>
+
+        <div >
+          <Link to="/new-quiz">
+            <div>
+              <button className="new-quiz-button">New Quiz</button>
+            </div>
+          </Link>
         </div>
+
         <div className="quizzes-buttons">
           <Link to="/quiz">
             <div>
               <button>QuizText</button>
             </div>
           </Link>
-          <button>Art</button>
-          <button>Film</button>
+
+          {/* That's what I want to achieve: */}
+          {/* <Link to="/quiz/:id">
+            <div>
+              <button>value={quiz.title}</button>
+            </div>
+          </Link> */}
+
+          <button>Arts</button>
           <button>Geography</button>
           <button>History</button>
         </div>

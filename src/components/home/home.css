@@ -1,18 +1,17 @@
-.page-container {
+/* .page-container {
   width: 100%;
   background-image: url("../../assets/quiz-bg.png");
   background-size: cover;
   background-repeat: no-repeat;
   justify-content: space-between;
   overflow: hidden;
-}
+} */
 
 .quizzes-buttons {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   margin-top: 3rem;
-
 }
 
 button.new-quiz-button {
