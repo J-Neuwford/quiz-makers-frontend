@@ -2,6 +2,7 @@ import "./quiz.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import getQuizId from "../new-quiz/new-quiz";
 
 export type Question = {
   id: number;
@@ -10,23 +11,45 @@ export type Question = {
   correctOption: string;
 };
 
+const getFakeQuestions = async () => {
+  return {
+    data: {
+      id: 3,
+      questions: ["What is the capital of France?", "Which color is #ffffff?"],
+    },
+  };
+};
+
 const Quiz = () => {
   const { id } = useParams<{ id: string }>();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [score, setScore] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  async function fetchQuestions() {
+    try {
+      const response = await getFakeQuestions();
+
+      const formattedQuestions: Question[] = response.data.questions.map(
+        (text, index) => ({
+          id: index + 1,
+          text,
+          options: [],
+          correctOption: "",
+        })
+      );
+
+      setQuestions(formattedQuestions);
+      setIsLoading(false); // Set loading to false when questions are fetched
+    } catch (err) {
+      console.error("Error fetching questions:", err);
+      setIsLoading(false); // Set loading to false even on error
+    }
+  }
 
   useEffect(() => {
-    async function fetchQuestions() {
-      try {
-        const response = await axios.get(`/api/quizzes/${id}/questions`);
-        setQuestions(response.data);
-      } catch (err) {
-        console.error("Error fetching questions:", err);
-      }
-    }
-
     fetchQuestions();
   }, [id]);
 
@@ -44,11 +67,10 @@ const Quiz = () => {
     }
   };
 
-  if (questions.length === 0) {
-    // If Im not able to fetch the questions from the api
+  if (isLoading) {
     return (
       <div>
-        <h1>No questions found</h1>
+        <h1>Loading...</h1>
       </div>
     );
   }
@@ -57,36 +79,37 @@ const Quiz = () => {
 
   return (
     <>
-      <h1>
-        Quiz Name:
-        {/* {quizId/quiz.title} */}
-      </h1>
+      <div className="quiz-container">
+        <h1>
+          Quiz Name:
+          {/* {quizId/quiz.title} */}
+        </h1>
 
-      <div>
-        {selectedOption === "completed" ? (
-          <div>
-            <h2>Quiz Completed!</h2>
-            <p>Total Score: {score}</p>
-          </div>
-        ) : (
-          <div>
-            <h2>Question:</h2>
-            <p>{currentQuestion.text}</p>
-            <h3>Options:</h3>
-            <ul>
-              {currentQuestion.options.map((option, index) => (
-                <li key={index}>
-                  <button
-                    onClick={() => handleOptionSelect(option)}
-                    disabled={selectedOption !== null}
-                  >
-                    {option}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <div>
+          {selectedOption === "completed" ? (
+            <div>
+              <h2>Quiz Completed!</h2>
+              <p>Total Score: {score}</p>
+            </div>
+          ) : (
+            <div>
+              <h2>Question: {currentQuestion.text}</h2>
+              <h2>Options:</h2>
+              <ul>
+                {currentQuestion.options.map((option, index) => (
+                  <li key={index}>
+                    <button
+                      onClick={() => handleOptionSelect(option)}
+                      disabled={selectedOption !== null}
+                    >
+                      {option}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

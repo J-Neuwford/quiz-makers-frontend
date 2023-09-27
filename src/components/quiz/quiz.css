@@ -6,3 +6,34 @@
   justify-content: space-between;
   overflow: hidden;
 }
+
+.quiz-container {
+  background-color: #cb6ce6;
+  border-radius: 25px;
+  margin-inline: 50px;
+}
+
+h1 {
+  color: rgb(59, 27, 27);
+  margin-inline: 10px;
+  padding: 5px;
+}
+
+h2 {
+  color: rgba(35, 17, 70, 0.85);
+  margin-inline: 10px;
+  padding: 5px;
+}
+
+h3 {
+  color: black;
+  margin-inline: 10px;
+  padding: 5px;
+}
+
+p {
+  font-size: 14px;
+  color: black;
+  margin-inline: 10px;
+  padding: 5px;
+}
