@@ -1,6 +1,7 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import NewQuizPage from "./pages/new-quiz-page";
 import HomePage from "./pages/home-page";
+import NewQuestionPage from "./pages/new-question-page";
 
 const router = createBrowserRouter([
   {

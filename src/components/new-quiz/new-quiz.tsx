@@ -1,11 +1,16 @@
 import "./New-quiz.css";
 import { useState } from "react";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import NewQuestion from "../new-question/new-question";
 
 export type QuizProps = {
   title: string;
   //description: string;
+};
+
+export type QuestionProps = {
+  questionText: string;
+  quizId: number | null;
 };
 
 const NewQuiz = () => {
@@ -13,9 +18,10 @@ const NewQuiz = () => {
     title: "",
     //description: "",
   });
+  const [showForm, setShowForm] = useState(true);
+  const [quizId, setQuizId] = useState<number | null>(null);
 
   const handleSubmit = async (e) => {
-    console.log("submitted");
     e.preventDefault();
     try {
       const response = await axios.post("/api/quizzes/new", quiz);
@@ -25,47 +31,56 @@ const NewQuiz = () => {
     }
   };
 
-  const handleClick = () => {
-    // to /new-question
+  const getQuizId = async () => {
+    console.log("requesting quiz id");
+    try {
+      const response = await axios.get("/api/quizzes");
+      const lastQuizIndex = response.data.quizzes.length - 1;
+      console.log("response:", response.data.quizzes[lastQuizIndex].id);
+      return response.data.quizzes[lastQuizIndex].id;
+    } catch (err) {
+      console.log("get quizzes unsuccessful");
+    }
+  };
+
+  const handleClick = async () => {
+    setShowForm(false);
+    console.log("QUIZ: ", quiz);
+    const quizId = await getQuizId();
+    setQuizId(quizId);
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Quiz Name</label>
-        </div>
-        <div>
-          <input
-            type="text"
-            id="quizName"
-            value={quiz.title}
-            onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
-            placeholder="Enter a quiz name"
-          />
-        </div>
-        <button type="submit">Create Quiz</button>
-      </form>
+      <div className="container">
+        {showForm && (
+          <form>
+            <div>
+              <label className="form">Enter quiz name:</label>
+            </div>
+            <div>
+              <input
+                className="form"
+                type="text"
+                id="quizName"
+                value={quiz.title}
+                onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
+                placeholder="Enter a quiz name"
+              />
+            </div>
+            <button type="button" onClick={handleSubmit}>
+              Create Quiz
+            </button>
+          </form>
+        )}
 
-      <div>
-        <button onClick={handleClick}>Continue</button>
+        {!showForm && <NewQuestion quizTitle={quiz.title} newQuizId={quizId} />}
+
+        <div>
+          <button onClick={handleClick}>Continue</button>
+        </div>
       </div>
     </>
   );
 };
 export default NewQuiz;
-
-//{
-/* <div>
-<label htmlFor="quiz-description">Quiz Description</label>
-</div>
-<div className="quiz-form-field">
-<input
-  id="quiz-description"
-  name="description"
-  value={quiz.description}
-  onChange={(e) => setQuiz({ ...quiz, description: e.target.value })}
-  placeholder="Enter a quiz description"
-/>
-</div> */
-//}
