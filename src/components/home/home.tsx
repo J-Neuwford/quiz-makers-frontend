@@ -24,6 +24,7 @@ const Home = () => {
             </div>
           </Link>
 
+          {/* That's what I want to achieve: */}
           {/* <Link to="/quiz/:id">
             <div>
               <button>value={quiz.title}</button>

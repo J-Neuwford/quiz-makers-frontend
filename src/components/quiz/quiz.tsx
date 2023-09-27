@@ -46,38 +46,49 @@ const Quiz = () => {
 
   if (questions.length === 0) {
     // If Im not able to fetch the questions from the api
-    return <div>No questions found</div>;
+    return (
+      <div>
+        <h1>No questions found</h1>
+      </div>
+    );
   }
 
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <div className="page-container">
-      {selectedOption === "completed" ? (
-        <div>
-          <h2>Quiz Completed!</h2>
-          <p>Total Score: {score}</p>
-        </div>
-      ) : (
-        <div>
-          <h2>Question:</h2>
-          <p>{currentQuestion.text}</p>
-          <h3>Options:</h3>
-          <ul>
-            {currentQuestion.options.map((option, index) => (
-              <li key={index}>
-                <button
-                  onClick={() => handleOptionSelect(option)}
-                  disabled={selectedOption !== null}
-                >
-                  {option}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    <>
+      <h1>
+        Quiz Name:
+        {/* {quizId/quiz.title} */}
+      </h1>
+
+      <div>
+        {selectedOption === "completed" ? (
+          <div>
+            <h2>Quiz Completed!</h2>
+            <p>Total Score: {score}</p>
+          </div>
+        ) : (
+          <div>
+            <h2>Question:</h2>
+            <p>{currentQuestion.text}</p>
+            <h3>Options:</h3>
+            <ul>
+              {currentQuestion.options.map((option, index) => (
+                <li key={index}>
+                  <button
+                    onClick={() => handleOptionSelect(option)}
+                    disabled={selectedOption !== null}
+                  >
+                    {option}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
