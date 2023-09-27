@@ -13,7 +13,8 @@ const router = createBrowserRouter([
     element: <NewQuizPage />,
   },
   {
-    path: "/quiz/:id",
+    // path: "/quiz/:id",
+    path: "/quiz",
     element: <QuizPage />,
   }
 ]);
