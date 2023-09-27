@@ -1,4 +1,3 @@
-
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -23,10 +22,27 @@ body {
 
 h1 {
   font-size: 1.6em;
-  padding: auto;
-  margin-inline: 20px;
+  padding: 5px;
   line-height: 1.1;
-  color: rgb(219, 214, 223);
+  color: white;
+  margin-inline: 10px;
+}
+h2 {
+  color: rgba(35, 17, 70, 0.85);
+  margin-inline: 10px;
+  padding: 5px;
+}
+
+h3 {
+  color: black;
+  margin-inline: 10px;
+  padding: 5px;
+}
+p {
+  font-size: 14px;
+  color: black;
+  margin-inline: 10px;
+  padding: 5px;
 }
 
 button {
