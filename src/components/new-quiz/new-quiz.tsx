@@ -20,12 +20,20 @@ const NewQuiz = () => {
   });
   const [showForm, setShowForm] = useState(true);
   const [quizId, setQuizId] = useState<number | null>(null);
+  const [buttonText, setButtonText] = useState<string>("Create Quiz");
+  const [submitIsDisabled, setSubmitIsDisabled] = useState<boolean>(false);
+  const [continueIsDisabled, setContinueIsDisabled] = useState<boolean>(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/quizzes/new", quiz);
-      console.log("response:", response);
+      if (quiz.title != "") {
+        const response = await axios.post("/api/quizzes/new", quiz);
+        console.log("response:", response);
+        setButtonText("Quiz created!");
+        setSubmitIsDisabled(true);
+        setContinueIsDisabled(false);
+      }
     } catch (err) {
       console.log("Post to backend unsuccessful.", err);
     }
@@ -62,14 +70,17 @@ const NewQuiz = () => {
               <input
                 className="form"
                 type="text"
-                id="quizName"
                 value={quiz.title}
                 onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
                 placeholder="Enter a quiz name"
               />
             </div>
-            <button type="button" onClick={handleSubmit}>
-              Create Quiz
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={submitIsDisabled}
+            >
+              {`${buttonText}`}
             </button>
           </form>
         )}
@@ -77,7 +88,9 @@ const NewQuiz = () => {
         {!showForm && <NewQuestion quizTitle={quiz.title} newQuizId={quizId} />}
 
         <div>
-          <button onClick={handleClick}>Continue</button>
+          <button onClick={handleClick} disabled={continueIsDisabled}>
+            Continue
+          </button>
         </div>
       </div>
     </>
