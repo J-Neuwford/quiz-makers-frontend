@@ -103,7 +103,7 @@ to the question controller to simplify this.
     // get the new question ID and add it to the answers
     // this also happens every key, so can be refactored and stored in state
     const questionId = await getNewQuestionId();
-    newAnswers[i].questionId = questionId;
+    newAnswers[i].questionId = questionId + 1;
 
     setAnswers(newAnswers);
   };
