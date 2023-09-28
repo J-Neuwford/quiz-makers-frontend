@@ -1,7 +1,6 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import NewQuizPage from "./pages/new-quiz-page";
 import HomePage from "./pages/home-page";
-import AllQuizzesPage from "./pages/all-quizzes-page";
 import QuizPage from "./pages/quiz-page";
 
 const router = createBrowserRouter([
@@ -14,13 +13,8 @@ const router = createBrowserRouter([
     element: <NewQuizPage />,
   },
   {
-    // path: "/quizzes
-    path: "/all-quizzes",
-    element: <AllQuizzesPage />,
-  },
-  {
     // path: "/quiz/:id",
-    path: "/quiz",
+    path: "/quiz/:id",
     element: <QuizPage />,
   },
 ]);
