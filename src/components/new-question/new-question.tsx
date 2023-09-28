@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { QuizProps, QuestionProps } from "../new-quiz/new-quiz";
+import { QuestionProps } from "../new-quiz/new-quiz";
 
 export type AnswerProps = {
   answerText: string;
@@ -8,6 +8,7 @@ export type AnswerProps = {
   questionId: number | null;
 };
 
+// quizTitle and newQuizId: any type warning
 const NewQuestion = ({ quizTitle, newQuizId }) => {
   const [question, setQuestion] = useState<QuestionProps>({
     questionText: "",
@@ -17,6 +18,8 @@ const NewQuestion = ({ quizTitle, newQuizId }) => {
   const [answers, setAnswers] = useState<AnswerProps[]>([
     {
       answerText: "",
+      // first answer in form will be set to true
+      // we will need another function to mix these
       isCorrect: true,
       questionId: null,
     },
@@ -32,42 +35,51 @@ const NewQuestion = ({ quizTitle, newQuizId }) => {
     },
   ]);
 
+  // posts new questions and answers to the backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const qResponse = await axios.post("/api/questions/new", question);
-      console.log(qResponse);
+      //post question
+      const response = await axios.post("/api/questions/new", question);
+      console.log(response);
 
-      const questionId = await getQuestionId();
-      const a1Response = await axios.post(
-        `/api/answers/:${questionId}/new`,
-        answers[0]
-      );
-      console.log(a1Response);
-      const a2Response = await axios.post(
-        `/api/answers/:${questionId}/new`,
-        answers[1]
-      );
-      console.log(a2Response);
-      const a3Response = await axios.post(
-        `/api/answers/:${questionId}/new`,
-        answers[2]
-      );
-      console.log(a3Response);
+      // post all answers, interating in case we want to add more answers later
+      const questionId = await getNewQuestionId();
+      for (let i = 0; i < answers.length; i++) {
+        const response = await axios.post(
+          `/api/answers/:${questionId}/new`,
+          answers[i]
+        );
+        console.log(response);
+      }
 
+      // reset input fields
       setQuestion({
         questionText: "",
         quizId: newQuizId,
       });
+      const newAnswers = [...answers];
+      for (let i = 0; i < answers.length; i++) {
+        newAnswers[i].answerText = "";
+        setAnswers(newAnswers);
+      }
     } catch (err) {
       console.log("Post to backend unsuccessful.", err);
     }
   };
 
-  const getQuestionId = async () => {
+  /*
+GET NEW QUESTION ID
+this helper function gets the new question ID
+it currently gets all the questions, so we can add a 'getLastQuestion' method 
+to the question controller to simplify this. 
+*/
+  const getNewQuestionId = async () => {
     console.log("requesting question id");
     try {
+      //get all questions
       const response = await axios.get("/api/questions");
+      // get the last question in the questions array
       const lastQuestionIndex = response.data.questions.length - 1;
       console.log("response:", response.data.questions[lastQuestionIndex].id);
       return response.data.questions[lastQuestionIndex].id;
@@ -77,10 +89,17 @@ const NewQuestion = ({ quizTitle, newQuizId }) => {
   };
 
   const handleChange = async (i: number, e: any) => {
+    // make a copy of the answers array
     const newAnswers = [...answers];
+
+    //update answer text with each key
     newAnswers[i].answerText = e.target.value;
-    const questionId = await getQuestionId();
+
+    // get the new question ID and add it to the answers
+    // this also happens every key, so can be refactored
+    const questionId = await getNewQuestionId();
     newAnswers[i].questionId = questionId;
+
     setAnswers(newAnswers);
   };
 
@@ -111,7 +130,7 @@ const NewQuestion = ({ quizTitle, newQuizId }) => {
           <input
             type="text"
             value={answers[0].answerText}
-            onChange={(e) => handleChange(0, e)}
+            onChange={(e) => handleChange(0, e)} //(answers array element, event)
           />
         </div>
         <div>
