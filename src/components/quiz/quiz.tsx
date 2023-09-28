@@ -12,7 +12,7 @@ export type Quiz = {
 export type Question = {
   id: number;
   questionText: string;
-  options: Answer[]; // Change options to an array of answers
+  options: Answer[];
 };
 
 export type Answer = {
@@ -25,8 +25,7 @@ const Quiz = () => {
   const { id } = useParams<{ id: string }>();
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null); // Change selectedOption type to number
-  const [score, setScore] = useState(0);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -45,24 +44,25 @@ const Quiz = () => {
   }, [id]);
 
   const handleOptionSelect = (questionId: number, answerId: number) => {
+    let points = 0;
     const currentQuestion = quiz?.questions[currentQuestionIndex];
     if (currentQuestion && currentQuestion.id === questionId) {
-      // Find the correct answer for the selected question
-      const correctAnswer = currentQuestion.options.find(
-        (answer) => answer.isCorrect
+      const selectedAnswer = currentQuestion.options.find(
+        (option) => option.id === answerId
       );
-
-      if (correctAnswer && correctAnswer.id === answerId) {
-        setScore(score + 1);
-      }
-
-      if (currentQuestionIndex < quiz!.questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setSelectedOption(null);
-      } else {
-        setSelectedOption(-1); // Use -1 to indicate completion
+      if (selectedAnswer && selectedAnswer.isCorrect) {
+        points = points + 1;
       }
     }
+
+    // After we update the points, we move to the next question (if it exists)
+    setSelectedOption(answerId);
+    if (currentQuestionIndex < quiz!.questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+
+    const totalPoints = points;
+    return totalPoints;
   };
 
   if (isLoading) {
@@ -86,34 +86,29 @@ const Quiz = () => {
   return (
     <>
       <div className="quiz-container">
-        <h1>Quiz Name: {quiz.title || "Untitled Quiz"}</h1>
+        <h1>Quiz Name: {quiz.title}</h1>
 
         <div>
-          {selectedOption === -1 ? ( // Check for completion using -1
-            <div>
-              <h2>Quiz Completed!</h2>
-              <p>Total Score: {score}</p>
-            </div>
-          ) : (
-            <div>
-              <h2>Question: {currentQuestion.questionText}</h2>
-              <h2>Options:</h2>
-              <ul>
-                {currentQuestion.options.map((option) => (
-                  <li key={option.id}>
-                    <button
-                      onClick={() =>
-                        handleOptionSelect(currentQuestion.id, option.id)
-                      }
-                      disabled={selectedOption !== null}
-                    >
-                      {option.answerText}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <h2>Question: {currentQuestion.questionText}</h2>
+          <h2>Options:</h2>
+          <ul>
+            {currentQuestion.options.map((option) => (
+              <li key={option.id}>
+                <label>
+                  <input
+                    type="radio"
+                    name={`question-${currentQuestion.id}`}
+                    value={option.id}
+                    onChange={() =>
+                      handleOptionSelect(currentQuestion.id, option.id)
+                    }
+                    checked={selectedOption === option.id}
+                  />
+                  {option.answerText}
+                </label>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </>
