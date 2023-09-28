@@ -1,12 +1,6 @@
-/* .page-container {
-  width: 100%;
-  background-image: url("../../assets/quiz-bg.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  justify-content: space-between;
-  overflow: hidden;
-} */
-
+h1 {
+  color: white;
+}
 .quizzes-buttons {
   display: grid;
   gap: 1rem;

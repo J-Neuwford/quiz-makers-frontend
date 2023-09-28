@@ -8,11 +8,6 @@ export type IdParams = {
 };
 
 export default function QuizPage() {
-
-  // const { id } useParams<IdParams>();
-  
-  // const quizId = parseInt(id, 10);
-  
   return (
     <>
       <div className="page-container">

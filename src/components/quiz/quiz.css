@@ -6,3 +6,9 @@
   justify-content: space-between;
   overflow: hidden;
 }
+
+.quiz-container {
+  background-color: #cb6ce6;
+  border-radius: 25px;
+  margin-inline: 50px;
+}
