@@ -8,8 +8,13 @@ export type AnswerProps = {
   questionId: number | null;
 };
 
+export type NewQuestionProps = {
+  quizTitle: string;
+  newQuizId: number;
+};
+
 // quizTitle and newQuizId: any type warning
-const NewQuestion = ({ quizTitle, newQuizId }) => {
+const NewQuestion = ({ quizTitle, newQuizId }: NewQuestionProps) => {
   const [question, setQuestion] = useState<QuestionProps>({
     questionText: "",
     quizId: 0,
@@ -36,7 +41,7 @@ const NewQuestion = ({ quizTitle, newQuizId }) => {
   ]);
 
   // posts new questions and answers to the backend
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       //post question
@@ -96,7 +101,7 @@ to the question controller to simplify this.
     newAnswers[i].answerText = e.target.value;
 
     // get the new question ID and add it to the answers
-    // this also happens every key, so can be refactored
+    // this also happens every key, so can be refactored and stored in state
     const questionId = await getNewQuestionId();
     newAnswers[i].questionId = questionId;
 
@@ -112,7 +117,7 @@ to the question controller to simplify this.
         </div>
         <div>
           <textarea
-            rows="3"
+            rows={3}
             value={question.questionText}
             onChange={(e) => {
               setQuestion({
