@@ -2,68 +2,66 @@ import "./quiz.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import getQuizId from "../new-quiz/new-quiz";
+
+export type Quiz = {
+  id: number;
+  title: string | null;
+  questions: Question[];
+};
 
 export type Question = {
   id: number;
-  text: string;
-  options: string[];
-  correctOption: string;
+  questionText: string;
+  options: Answer[]; // Change options to an array of answers
 };
 
-const getFakeQuestions = async () => {
-  return {
-    data: {
-      id: 3,
-      questions: ["What is the capital of France?", "Which color is #ffffff?"],
-    },
-  };
+export type Answer = {
+  id: number;
+  answerText: string;
+  isCorrect: boolean;
 };
 
 const Quiz = () => {
   const { id } = useParams<{ id: string }>();
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null); // Change selectedOption type to number
   const [score, setScore] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  async function fetchQuestions() {
-    try {
-      const response = await getFakeQuestions();
-
-      const formattedQuestions: Question[] = response.data.questions.map(
-        (text, index) => ({
-          id: index + 1,
-          text,
-          options: [],
-          correctOption: "",
-        })
-      );
-
-      setQuestions(formattedQuestions);
-      setIsLoading(false); // Set loading to false when questions are fetched
-    } catch (err) {
-      console.error("Error fetching questions:", err);
-      setIsLoading(false); // Set loading to false even on error
-    }
-  }
-
   useEffect(() => {
-    fetchQuestions();
+    async function fetchQuiz() {
+      try {
+        const response = await axios.get(`/api/quizzes/${id}`);
+        setQuiz(response.data);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching quiz:", err);
+        setIsLoading(false);
+      }
+    }
+
+    fetchQuiz();
   }, [id]);
 
-  const handleOptionSelect = (option: string) => {
-    const currentQuestion = questions[currentQuestionIndex];
-    if (currentQuestion.correctOption === option) {
-      setScore(score + 1);
-    }
+  const handleOptionSelect = (questionId: number, answerId: number) => {
+    const currentQuestion = quiz?.questions[currentQuestionIndex];
+    if (currentQuestion && currentQuestion.id === questionId) {
+      // Find the correct answer for the selected question
+      const correctAnswer = currentQuestion.options.find(
+        (answer) => answer.isCorrect
+      );
 
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOption(null);
-    } else {
-      setSelectedOption("completed");
+      if (correctAnswer && correctAnswer.id === answerId) {
+        setScore(score + 1);
+      }
+
+      if (currentQuestionIndex < quiz!.questions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setSelectedOption(null);
+      } else {
+        setSelectedOption(-1); // Use -1 to indicate completion
+      }
     }
   };
 
@@ -75,34 +73,41 @@ const Quiz = () => {
     );
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
+  if (!quiz) {
+    return (
+      <div>
+        <h1>Quiz not found</h1>
+      </div>
+    );
+  }
+
+  const currentQuestion = quiz.questions[currentQuestionIndex];
 
   return (
     <>
       <div className="quiz-container">
-        <h1>
-          Quiz Name:
-          {/* {quizId/quiz.title} */}
-        </h1>
+        <h1>Quiz Name: {quiz.title || "Untitled Quiz"}</h1>
 
         <div>
-          {selectedOption === "completed" ? (
+          {selectedOption === -1 ? ( // Check for completion using -1
             <div>
               <h2>Quiz Completed!</h2>
               <p>Total Score: {score}</p>
             </div>
           ) : (
             <div>
-              <h2>Question: {currentQuestion.text}</h2>
+              <h2>Question: {currentQuestion.questionText}</h2>
               <h2>Options:</h2>
               <ul>
-                {currentQuestion.options.map((option, index) => (
-                  <li key={index}>
+                {currentQuestion.options.map((option) => (
+                  <li key={option.id}>
                     <button
-                      onClick={() => handleOptionSelect(option)}
+                      onClick={() =>
+                        handleOptionSelect(currentQuestion.id, option.id)
+                      }
                       disabled={selectedOption !== null}
                     >
-                      {option}
+                      {option.answerText}
                     </button>
                   </li>
                 ))}

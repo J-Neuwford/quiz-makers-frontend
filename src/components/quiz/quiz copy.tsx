@@ -2,92 +2,118 @@ import "./quiz.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import "../new-quiz/new-quiz";
+
+export type Quiz = {
+  id: number;
+  title: string | null;
+  questions: Question[];
+};
 
 export type Question = {
   id: number;
-  text: string;
-  options: string[];
-  correctOption: string;
+  questionText: string;
+  options: Answer[];
+};
+
+export type Answer = {
+  id: number;
+  answerText: string;
+  isCorrect: boolean;
 };
 
 const Quiz = () => {
   const { id } = useParams<{ id: string }>();
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [score, setScore] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchQuestions() {
+    async function fetchQuiz() {
       try {
-        const response = await axios.get(`/api/quizzes/${id}/questions`);
-        setQuestions(response.data);
+        const response = await axios.get("/api/quizzes/${id}");
+        setQuiz(response.data);
+        setIsLoading(false);
       } catch (err) {
-        console.error("Error fetching questions:", err);
+        console.error("Error fetching quiz:", err);
+        setIsLoading(false);
       }
     }
 
-    fetchQuestions();
+    fetchQuiz();
   }, [id]);
 
-  const handleOptionSelect = (option: string) => {
-    const currentQuestion = questions[currentQuestionIndex];
-    if (currentQuestion.correctOption === option) {
-      setScore(score + 1);
-    }
+  const handleOptionSelect = (questionId: number, answerId: number) => {
+    const currentQuestion = quiz?.questions[currentQuestionIndex];
+    if (currentQuestion && currentQuestion.id === questionId) {
+      const correctAnswer = currentQuestion.options.find(
+        (answer) => answer.isCorrect
+      );
 
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOption(null);
-    } else {
-      setSelectedOption("completed");
+      if (correctAnswer && correctAnswer.id === answerId) {
+        setScore(score + 1);
+      }
+
+      if (currentQuestionIndex < quiz!.questions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setSelectedOption(null);
+      } else {
+        setSelectedOption(-1);
+      }
     }
   };
 
-  if (questions.length === 0) {
-    // If Im not able to fetch the questions from the api
+  if (isLoading) {
     return (
       <div>
-        <h1>No questions found</h1>
+        <h1>Loading...</h1>
       </div>
     );
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
+  if (!quiz) {
+    return (
+      <div>
+        <h1>Quiz not found</h1>
+      </div>
+    );
+  }
+
+  const currentQuestion = quiz.questions[currentQuestionIndex];
 
   return (
     <>
-      <h1>
-        Quiz Name:
-        {/* {quizId/quiz.title} */}
-      </h1>
+      <div className="quiz-container">
+        <h1>Quiz Name: {quiz.title}</h1>
 
-      <div>
-        {selectedOption === "completed" ? (
-          <div>
-            <h2>Quiz Completed!</h2>
-            <p>Total Score: {score}</p>
-          </div>
-        ) : (
-          <div>
-            <h2>Question:</h2>
-            <p>{currentQuestion.text}</p>
-            <h3>Options:</h3>
-            <ul>
-              {currentQuestion.options.map((option, index) => (
-                <li key={index}>
-                  <button
-                    onClick={() => handleOptionSelect(option)}
-                    disabled={selectedOption !== null}
-                  >
-                    {option}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <div>
+          {selectedOption === -1 ? ( // Check for completion using -1
+            <div>
+              <h2>Quiz Completed!</h2>
+              <p>Total Score: {score}</p>
+            </div>
+          ) : (
+            <div>
+              <h2>Question: {currentQuestion.questionText}</h2>
+              <h2>Options:</h2>
+              <ul>
+                {currentQuestion.options.map((option) => (
+                  <li key={option.id}>
+                    <button
+                      onClick={() =>
+                        handleOptionSelect(currentQuestion.id, option.id)
+                      }
+                      disabled={selectedOption !== null}
+                    >
+                      {option.answerText}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
